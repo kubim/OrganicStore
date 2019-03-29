@@ -19,21 +19,22 @@ import ReactDOM from 'react-dom';
 // import SingleProduct from "../SingleProduct";
 // import Shop from "../Shop";
 
+import registerServiceWorker from '../../registerServiceWorker';
 
 import Axios from 'axios';
 import {listCIDPCRequest} from "../../actions";
 // import Link from "react-router-dom/es/Link";
 
 class ItemQuantityH extends Component {
-    componentDidMount () {
+    async componentDidMount () {
         // this.props.listPALL();
         // this.props.listCALL();
         // this.props.listCIDPCCALL(2);
         // var {products1}= this.props.products;
-        //addjs();
-        //var { idp } = this.props;
-        //alert(idp);
-        //this.props.listPIDCACALL(idp);
+        addjs();
+        var { idp } = this.props;
+        alert(idp);
+        this.props.listPIDCACALL(idp);
         // console.log(this.props.lispPA());
         // this.props.listCIDPCALL(1);
     }

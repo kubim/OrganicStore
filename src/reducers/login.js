@@ -1,82 +1,24 @@
-const SET_LOGIN_PENDING = 'SET_LOGIN_PENDING';
-const SET_LOGIN_SUCCESS = 'SET_LOGIN_SUCCESS';
-const SET_LOGIN_ERROR = 'SET_LOGIN_ERROR';
-
-export function login(email, password) {
-  return dispatch => {
-    dispatch(setLoginPending(true));
-    dispatch(setLoginSuccess(false));
-    dispatch(setLoginError(null));
-
-    callLoginApi(email, password, error => {
-      dispatch(setLoginPending(false));
-      if (!error) {
-        // document.getElementById('icon-login').setAttribute("style","display:none");
-        // document.getElementById('form-login').setAttribute("style","display:none");
-        // document.getElementById('icon-user').removeAttribute('style');
-        alert("Đăng nhập thành công");
-        dispatch(setLoginSuccess(true));
-      } else {
-        alert("Đăng nhập thất bại");
-        dispatch(setLoginError(error));
-      }
-    });
-  }
+const loginState={
+  account:JSON.parse(localStorage.getItem('userData')),
+  pending:false,
+  error:false,
 }
-
-function setLoginPending(isLoginPending) {
-  return {
-    type: SET_LOGIN_PENDING,
-    isLoginPending
-  };
-}
-
-function setLoginSuccess(isLoginSuccess) {
-  return {
-    type: SET_LOGIN_SUCCESS,
-    isLoginSuccess
-  };
-}
-
-function setLoginError(loginError) {
-  return {
-    type: SET_LOGIN_ERROR,
-    loginError
-  }
-}
-
-function callLoginApi(email, password, callback) {
-  setTimeout(() => {
-    if (email === 'admin@example.com' && password === 'admin') {
-      return callback(null);
-    } else {
-      return callback(new Error('Invalid email and password'));
-    }
-  }, 1000);
-}
-
-export default function loginReducer(state = {
-  isLoginSuccess: false,
-  isLoginPending: false,
-  loginError: null
-}, action) {
+export default function loginReducer(state = loginState, action) {
   switch (action.type) {
-    case SET_LOGIN_PENDING:
-      return Object.assign({}, state, {
-        isLoginPending: action.isLoginPending
-      });
-
-    case SET_LOGIN_SUCCESS:
-      return Object.assign({}, state, {
-        isLoginSuccess: action.isLoginSuccess
-      });
-
-    case SET_LOGIN_ERROR:
-      return Object.assign({}, state, {
-        loginError: action.loginError
-      });
-
+    case 'PENDING':
+      return {account:null,error:false,pending: true};
+    case 'LOGIN_SUCCESS':{
+      localStorage.setItem('userData', JSON.stringify(action.data));
+      return {account:Object.assign(action.data),error:false,pending: false};
+    }
+    case 'LOGIN_ERROR':
+      return {account:null,error:true,pending:false};
+    case 'LOGOUT':{
+      localStorage.removeItem("userData");
+      return {account:null,error:false,pending:false};
+    }
     default:
       return state;
   }
 }
+

@@ -1,31 +1,47 @@
-const cartState = {
-    cart:[],
-    sum:0
-}
+const cartState = JSON.parse(localStorage.getItem('cart'))!==null?JSON.parse(localStorage.getItem('cart')):{cart:[],sum:0}
 const cartReducer =(state=cartState,action)=>{
     switch (action.type) {
-
+        case 'ADD_WITH_QUANTITY':{
+            let check = findProductInCart(state.cart,action.product);
+            if(check!==-1) {
+                state.cart[check].quantity+=action.quantity;
+            }
+            else{
+                action.product.quantity=action.quantity;
+                state.cart=state.cart.concat(action.product);
+            }
+            state.sum += action.product.price*action.quantity;
+            localStorage.setItem('cart', JSON.stringify(state));
+            return {...state};
+        }
         case 'ADD_TO_CART':{
             let check = findProductInCart(state.cart,action.product);
             if(check!==-1) {
                 state.cart[check].quantity+=1;
-                return {cart:state.cart,sum:state.sum+=action.product.price};
             }
             else{
-                return {cart: state.cart.concat(action.product), sum: state.sum += action.product.price};
+                action.product.quantity=1;
+                state.cart=state.cart.concat(action.product);
             }
+            state.sum += action.product.price
+            localStorage.setItem('cart', JSON.stringify(state));
+            return {...state};
         }
         case 'DOWN_QUANTITY':{
             let check = findProductInCart(state.cart,action.product);
             if(state.cart[check].quantity>1){
                 state.cart[check].quantity-=1;
-                return {cart:state.cart,sum:state.sum-=action.product.price};
+                state.sum-=action.product.price;
             }
-            else return state;
+            localStorage.setItem('cart', JSON.stringify(state));
+            return {...state};
         }
         case 'DELETE_CART':{
             let check = findProductInCart(state.cart,action.product);
-            return {cart:state.cart.filter(x=>x.id!==action.product.id),sum:state.sum-=action.product.price*state.cart[check].quantity};
+            state.sum-=action.product.price*state.cart[check].quantity;
+            state.cart=state.cart.filter(x=>x.id!==action.product.id);
+            localStorage.setItem('cart', JSON.stringify(state));
+            return {...state}
         }
         default:
             return state;

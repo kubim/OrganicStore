@@ -2,29 +2,88 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import addjs from '../jslib/jslib';
 import {connect} from 'react-redux';
+import axios from "axios";
+import Paypal from "../component/Checkout/Paypal";
+import ReactLoading from "react-loading";
+import {loginError, loginSuccess} from "../actions";
 class Checkout extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      firstname:'',
+      isLoading:true,
+      name:'',
       city:'',
-      street:'',
+      address:'',
       phone:'',
       email:'',
       note:'',
+      pay:1,
     };
   }
   checkOut(){
-    alert("Tên:"+this.state.firstname+"\nGiao đến"+this.state.street+"tại thành phố "+this.state.city+"\nSố điện thoại: "+this.state.phone+"\nEmail: "+this.state.email+"\nGhi chú: "+this.state.note+"\nTổng tiền:"+this.props.sum+"VND");
+    let items=[];
+    let quantity=[];
+    this.props.cart.map((item)=>{
+      items.push(item.id);
+      quantity.push(item.quantity);
+    })
+    axios.post('https://api-organic.herokuapp.com/v1/orders',{
+      tbl_user_id:this.props.account.user_id,
+      tbl_payment_id:this.state.pay,
+      owner_name: this.state.name,
+      owner_email: this.state.email,
+      owner_phone: this.state.phone,
+      owner_address: this.state.address
+    }).then(res=>{
+        axios.post('https://api-organic.herokuapp.com/v1/add-order-items/'+res.data.id,{
+          list_items:items,
+          list_quantity:quantity
+        }).then(res2=>{
+          alert("Order success!");
+        }).catch(err2=>{
+          alert("add item fail !");
+        })
+    }).catch(err=>{
+      alert("post order fail!")
+    });
   }
   componentDidMount(){
-    addjs();
-  }
+      if(this.props.account!==null) {
+        axios.get('https://api-organic.herokuapp.com/v1/users/' + this.props.account.user_id)
+            .then(res => {
+              this.setState({
+                name:res.data.account.name,
+                address:res.data.account.address,
+                email:res.data.email,
+                phone:res.data.phone,
+                isLoading: false,
+              });
+              addjs();
+            }).catch(err => {
+          alert("Get user fail!")
+        })
+      }else {
+        this.setState({
+          isLoading: false,
+        })
+        addjs();
+      }
+    }
   onChange = (event) => {
     const target = event.target;
     const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
     this.setState({  [name]: value });
+  }
+  postOrder(){
+    // axios.post('https://organic-store.herokuapp.com/api/orders',{
+    //   email:email,
+    //   password:password
+    // }).then(res=>{
+    //   alert("Gởi đơn hàng thành công!")
+    // }).catch(err=>{
+    //   alert("Gởi đơn hàng thất bại!")
+    // });
   }
   render() {
     return (
@@ -48,56 +107,57 @@ class Checkout extends Component {
         </section>
         {/* content page */}
         <div className="bg0 p-t-95 p-b-50">
+          {this.state.isLoading?(<ReactLoading style={{width:'100px',margin:'auto'}} type={"bubbles"} color={"green"} height={'10'} width={'10'} />):(
           <div className="container">
             {/* Login */}
-            <div>
-              <div className="txt-s-101 txt-center">
-                <span className="cl3">
-                </span>
-                <span className="cl10 hov12 js-toggle-panel1">
-                  Click here để login
-                </span>
-              </div>
-              <div className="how-bor3 p-rl-15 p-tb-28 m-tb-33 dis-none js-panel1">
-                <form className="size-w-60 m-rl-auto">
-                  <p className="txt-s-120 cl9 txt-center p-b-26">
-                    If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.
-                  </p>
-                  <div className="row">
-                    <div className="col-sm-6 p-b-20">
-                      <div>
-                        <div className="txt-s-101 cl6 p-b-10">
-                          Username or email <span className="cl12">*</span>
-                        </div>
-                        <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="text" name="username" />
-                      </div>
-                    </div>
-                    <div className="col-sm-6 p-b-20">
-                      <div>
-                        <div className="txt-s-101 cl6 p-b-10">
-                          Password <span className="cl12">*</span>
-                        </div>
-                        <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="password" name="password" />
-                      </div>
-                    </div>
-                    <div className="col-12">
-                      <button className="flex-c-m txt-s-105 cl0 bg10 size-a-21 hov-btn2 trans-04 p-rl-10">
-                        Login
-                      </button>
-                      <div className="flex-w flex-m p-t-10 p-b-3">
-                        <input id="check-creatacc" className="size-a-35 m-r-10" type="checkbox" name="creatacc" />
-                        <label htmlFor="check-creatacc" className="txt-s-101 cl9">
-                          Create an account?
-                        </label>
-                      </div>
-                      <a href="#" className="txt-s-101 cl9 hov-cl10 trans-04">
-                        Lost your password?
-                      </a>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
+            {/*<div>*/}
+              {/*<div className="txt-s-101 txt-center">*/}
+                {/*<span className="cl3">*/}
+                {/*</span>*/}
+                {/*<span className="cl10 hov12 js-toggle-panel1">*/}
+                  {/*Click here để login*/}
+                {/*</span>*/}
+              {/*</div>*/}
+              {/*<div className="how-bor3 p-rl-15 p-tb-28 m-tb-33 dis-none js-panel1">*/}
+                {/*<form className="size-w-60 m-rl-auto">*/}
+                  {/*<p className="txt-s-120 cl9 txt-center p-b-26">*/}
+                    {/*If you have shopped with us before, please enter your details in the boxes below. If you are a new customer, please proceed to the Billing &amp; Shipping section.*/}
+                  {/*</p>*/}
+                  {/*<div className="row">*/}
+                    {/*<div className="col-sm-6 p-b-20">*/}
+                      {/*<div>*/}
+                        {/*<div className="txt-s-101 cl6 p-b-10">*/}
+                          {/*Username or email <span className="cl12">*</span>*/}
+                        {/*</div>*/}
+                        {/*<input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="text" name="username" />*/}
+                      {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="col-sm-6 p-b-20">*/}
+                      {/*<div>*/}
+                        {/*<div className="txt-s-101 cl6 p-b-10">*/}
+                          {/*Password <span className="cl12">*</span>*/}
+                        {/*</div>*/}
+                        {/*<input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="password" name="password" />*/}
+                      {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="col-12">*/}
+                      {/*<button className="flex-c-m txt-s-105 cl0 bg10 size-a-21 hov-btn2 trans-04 p-rl-10">*/}
+                        {/*Login*/}
+                      {/*</button>*/}
+                      {/*<div className="flex-w flex-m p-t-10 p-b-3">*/}
+                        {/*<input id="check-creatacc" className="size-a-35 m-r-10" type="checkbox" name="creatacc" />*/}
+                        {/*<label htmlFor="check-creatacc" className="txt-s-101 cl9">*/}
+                          {/*Create an account?*/}
+                        {/*</label>*/}
+                      {/*</div>*/}
+                      {/*<a href="#" className="txt-s-101 cl9 hov-cl10 trans-04">*/}
+                        {/*Lost your password?*/}
+                      {/*</a>*/}
+                    {/*</div>*/}
+                  {/*</div>*/}
+                {/*</form>*/}
+              {/*</div>*/}
+            {/*</div>*/}
             {/* enter code */}
             <div className="p-t-17 p-b-70">
               <div className="txt-s-101 txt-center">
@@ -127,10 +187,10 @@ class Checkout extends Component {
                     <div className="col-sm-6 p-b-23">
                       <div>
                         <div className="txt-s-101 cl6 p-b-10">
-                          Tên <span className="cl12">*</span>
+                          Tên người nhận <span className="cl12">*</span>
                         </div>
-                        <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
-                               name="firstname" onChange={this.onChange}/>
+                        <input defaultValue={this.state.name} className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
+                               name="name" onChange={this.onChange}/>
                       </div>
                     </div>
                     {/*<div className="col-12 p-b-23">*/}
@@ -152,8 +212,8 @@ class Checkout extends Component {
                         <div className="txt-s-101 cl6 p-b-10">
                           Địa chỉ <span className="cl12">*</span>
                         </div>
-                        <input className="plh2 txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1 m-b-20"
-                               type="text" name="street" placeholder="địa chỉ sô nhà đường" onChange={this.onChange}/>
+                        <input defaultValue={this.state.address} className="plh2 txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1 m-b-20"
+                               type="text" name="address" placeholder="địa chỉ sô nhà đường" onChange={this.onChange}/>
                       </div>
                     </div>
                     <div className="col-12 p-b-23">
@@ -167,8 +227,9 @@ class Checkout extends Component {
                       {/*</select>*/}
                       {/*<div className="dropDownSelect2" />*/}
                       {/*</div>*/}
-                      <select style={{width: '100px'}} name="city" id="input" className="form-control"
-                              required="required" onChange={this.onChange} defaultValue="Đà Nẵng">
+                      <select style={{width: '120px'}} name="city" id="input" className="form-control"
+                              required="required" onChange={this.onChange} defaultValue="choose">
+                        <option value="choose" disabled>Choose</option>
                         <option value="Đà Nẵng"> Đà Nẵng</option>
                         <option value="Hội An">Hội An</option>
                         <option value="Huế">Huế</option>
@@ -203,7 +264,7 @@ class Checkout extends Component {
                         <div className="txt-s-101 cl6 p-b-10">
                           Số điện thoại <span className="cl12">*</span>
                         </div>
-                        <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
+                        <input defaultValue={this.state.phone} disabled={this.props.account!==null?true:null} className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
                                name="phone" onChange={this.onChange}/>
                       </div>
                     </div>
@@ -212,7 +273,7 @@ class Checkout extends Component {
                         <div className="txt-s-101 cl6 p-b-10">
                           Email <span className="cl12">*</span>
                         </div>
-                        <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
+                        <input defaultValue={this.state.email} disabled={this.props.account!==null?true:null} className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-20 focus1" type="text"
                                name="email" onChange={this.onChange}/>
                       </div>
                     </div>
@@ -275,30 +336,30 @@ class Checkout extends Component {
                    </div>
                   <div className="bo-all-1 bocl15 p-b-25 m-b-30">
                     <div className="flex-w flex-m bo-b-1 bocl15 p-rl-20 p-tb-16">
-                      <input className="m-r-15" id="radio1" type="radio" name="pay" defaultValue="payment"
-                             defaultChecked="checked"/>
+                      <input className="m-r-15" id="radio1" type="radio" name="pay"  value={1}
+                             defaultChecked="checked" onChange={this.onChange} />
                       <label className="txt-m-103 cl6" htmlFor="radio1">
-                        Kiểm tra thẻ
+                        Thanh toán tại nhà
                       </label>
                     </div>
                     <div className="content-payment bo-b-1 bocl15 p-rl-20 p-tb-15">
-                      <p className="txt-s-120 cl9">
-                        Vui lòng kiểm tra thẻ
-                      </p>
+                      <button onClick={this.checkOut.bind(this)}
+                              className="flex-c-m txt-s-105 cl0 bg10 size-a-21 hov-btn2 trans-04 p-rl-10">
+                        Thanh toán
+                      </button>
                     </div>
                     <div className="flex-w flex-m p-rl-20 p-t-17 p-b-10">
-                      <input className="m-r-15" id="radio2" type="radio" name="pay" defaultValue="paypal"/>
+                      <input className="m-r-15" id="radio2" type="radio" name="pay" value={2}  onChange={this.onChange}/>
                       <label className="txt-m-103 cl6" htmlFor="radio2">
-                        Paypal
+                        Thanh toán qua thẻ
                       </label>
                       <div className="w-full p-l-29 p-t-16">
                         <a href="#"><img src="images/icons/paypal.png" alt="IMG"/></a>
                       </div>
                     </div>
                     <div className="content-paypal bo-tb-1 bocl15 p-rl-20 p-tb-15 m-tb-10 dis-none">
-                      <p className="txt-s-120 cl9">
-                        Thanh toán thông qua PayPal
-                      </p>
+                      <p className="txt-s-120 cl9">Thanh toán thông qua PayPal</p>
+                      <Paypal total={this.props.sum}/>
                     </div>
                     <div className="p-l-49">
                       <a href="#" className="txt-s-120 cl6 hov-cl10 trans-04 p-t-10">
@@ -306,14 +367,14 @@ class Checkout extends Component {
                       </a>
                     </div>
                   </div>
-                  <button onClick={this.checkOut.bind(this)}
-                          className="flex-c-m txt-s-105 cl0 bg10 size-a-21 hov-btn2 trans-04 p-rl-10">
-                    Thanh toán
-                  </button>
+                  {/*<button onClick={this.checkOut.bind(this)}*/}
+                          {/*className="flex-c-m txt-s-105 cl0 bg10 size-a-21 hov-btn2 trans-04 p-rl-10">*/}
+                    {/*Thanh toán*/}
+                  {/*</button>*/}
                 </div>
               </div>
             </div>
-          </div>
+          </div>)}
         </div>
       </div>
     );
@@ -323,6 +384,7 @@ const mapStateToProps = (state) => {
   return {
     cart : state.cart.cart,
     sum : state.cart.sum,
+    account: state.login.account
   }
 }
 const mapDispatchToProps = (dispatch, props) => {

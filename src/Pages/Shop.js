@@ -16,40 +16,104 @@ const Handle = Slider.Handle;
 class Shop extends Component {
     constructor(props) {
         super(props);
+        var idcat=1;
+        // alert("a"+this.props.match.params.id);
+        if(this.props.match.params.id !==null) idcat =this.props.match.params.id;
         this.state = {
             isLoading:true,
             curpage:1,
-            page:3,
+            page:0,
             sliderValues: [10, 100],
             isfilter:false,
             filter:[],
+            filter1:[],
             product:[],
             categories:[],
+            soL:[],
+            productsOfC:[],
+            listPsOfC:[],
+            icat:idcat,
+           productF:[],
+            ifrate:0,
+            ifcat:this.props.match.params.id,
+            ifprice:0,
+            ifprice1:1000000
         };
     }
-    componentDidMount() {
-        //this.props.listPALL();
-        axios.get('https://organicshoptl.herokuapp.com/api/products')
-            .then(res =>{
-                this.setState({
-                    product:res.data,
-                    //page:Math.round(res.data.length/6.0),
-                    isLoading:false,
-                });
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        addjs();
+    }
+    async getData(){
+        await axios.get('https://api-organic.herokuapp.com/v1/categories').then(res =>{
+            this.setState({
+                categories:res.data,
+            });
+            this.state.categories.map((it,index) => {  this.soPinC(it.id)});
+                axios.get('https://organicshoptl.herokuapp.com/api/categories/'+this.state.icat).then(res =>{
+                    this.setState({
+                        product:res.data,
+                        filter:res.data,
+                        // product
+                        page:Math.round(res.data.length/6.0),
+                        isLoading:false,
+                    });
                 addjs();
-            })
-            .catch(err=>{alert("Get fail!")})
+            }).catch(err=>{alert("Get products fail!")})
+        }).catch(err=>{alert("Get categories fail!")})
+    }
+    componentDidMount(){
+        this.getData();
+    }
+    getprobyidcat=(id)=>{
+        var result=0;
+        console.log("id"+id);
+        // this.state.soL.push(id);
+        axios.get('https://organicshoptl.herokuapp.com/api/categories/'+id).then(res =>{
+            this.setState({
+                listPsOfC:res.data,
+            });
+            // alert("toigetprobyid roi");
+            console.log(this.state.listPsOfC)
+        }).catch(err1=>{alert("Get productsOfC fail!")});
+        return result;
+    }
+    soPinC =(id)=>{
+        // event.preventDefault();
+        var result=0;
+        console.log("id"+id);
+        // this.state.soL.push(id);
+        axios.get('https://organicshoptl.herokuapp.com/api/categories/'+id).then(res =>{
+            //      callApi(0,`categories/${id}`,'GET',null).then( res =>{
+            this.setState({
+                productsOfC:res.data,
+
+            });
+            // this.state.listPsOfC.push({id:id, list: this.state.productsOfC});
+            // this.setState(this.state);
+            var obj = {id:id, lengthC:this.state.productsOfC.length};
+            result = this.state.productsOfC.length;
+            this.state.soL.push(obj);
+            this.setState(this.state);
+            // this.state.listPsOfC.push({id:id, ProductC:this.state.productsOfC});
+            // this.setState(this.state);
+            // alert("rs"+result);
+            // addjs();
+        }).catch(err1=>{alert("Get productsOfC fail!")});
+        // console.log(this.state.soL);
+        // alert("sl"+this.state.soL);
+
+        return result;
     }
     setCurPage(i){
         this.setState({
             curpage:i,
         })
     }
-    createPage=()=>{
+    createPage(){
         let page = [];
         // Outer loop to create parent
         for (let i = 1; i <=this.state.page; i++) {
-            page.push(<a href="javascript:void(0)" onClick={this.setCurPage.bind(this,i)} className={this.state.curpage===i?'flex-c-m txt-s-115 cl6 size-a-23 bo-all-1 bocl15 hov-btn1 trans-04 m-all-3':'flex-c-m txt-s-115 cl6 size-a-23 bo-all-1 bocl15 hov-btn1 trans-04 m-all-3 active-pagi1'}>{i}</a>);
+            page.push(<a href="javascript:void(0)" onClick={this.setCurPage.bind(this,i)} className={this.state.curpage===i?'active-pagi1 flex-c-m txt-s-115 cl6 size-a-23 bo-all-1 bocl15 hov-btn1 trans-04 m-all-3':'flex-c-m txt-s-115 cl6 size-a-23 bo-all-1 bocl15 hov-btn1 trans-04 m-all-3'}>{i}</a>);
         }
         return page;
     }
@@ -57,42 +121,146 @@ class Shop extends Component {
         this.setState({ sliderValues });
         addjs();
     };
-    catfilter = id =>event=>{
-        this.setState({
-            isfilter:true,
-        });
-        if(id==0){
-            this.setState({filter:this.state.product});
-        }
-        else{
-            this.setState({
-                filter:this.state.product.filter(x=>x.tbl_category_id===id)
-            })
+    getmaincat=(id)=>{
+        return this.state.categories.find(x=>x.id===id).parent_id;
+    }
+
+     catfilter = id =>event=>{
+        // alert(id);
+
+
+        // if(id==0){
+        //     this.setState({filter:this.state.product});
+        // }
+        // else
+            {
+
+            // this.getprobyidcat(id);
+                axios.get('https://organicshoptl.herokuapp.com/api/categories/'+id).then(res =>{
+                    // alert("ifrate"+this.state.ifrate+" length"+res.data.length);
+                    this.setState({
+                        isfilter:true,
+                        // filter:res.data,
+                        filter:res.data.filter(x=>(
+                            (x.rating>=this.state.ifrate)
+                            &&
+                            (x.price>=this.state.ifprice) &&
+                            (x.price<=(this.state.ifprice1))
+                        )),
+                        ifcat:id,
+
+
+                    });
+                    // alert("toigetprobyid roi"+this.state.filter.length);
+                    console.log(this.state.filter);
+                }).catch(err1=>{alert("Get productsOfC fail!")});
+            // this.setState({
+            //
+            //     // filter:this.state.product.filter(x=>this.getmaincat(x.tbl_category_id)===id)
+            //
+            //         // .filter(x=>(this.getmaincat(x.tbl_category_id)===this.state.ifcat) )
+            //
+            //     // :this.state.listPsOfC,
+            //
+            // })
+                console.log("ha");
+                console.log(this.state.filter);
+            // this.filtermulti(event)
         }
         addjs();
     }
     ratingfilter=id=>event=>{
-        this.setState({
-            isfilter:true
-        })
+        // alert("rating"+id);
+        // this.setState({
+        //     isfilter:true
+        // })
         for (var i = 1; i <= 5; i++)
             document.getElementById(i).style.color = '#333';
         for (var i = 1; i <= id; i++)
             document.getElementById(i).style.color = 'yellow';
         document.getElementById('star').value = id;
-        this.setState({
-            filter:this.state.product.filter(x=>x.rating>id)
-        })
+        axios.get('https://organicshoptl.herokuapp.com/api/categories/'+this.state.ifcat).then(res =>{
+            // alert("catloc"+this.state.ifcat);
+            this.setState({
+                isfilter:true,
+                // filter:res.data,
+                filter:res.data.filter(x=>(
+                    (x.rating>=id)
+                    &&
+                    (x.price>=this.state.ifprice) &&
+                    (x.price<=(this.state.ifprice1))
+                )),
+                ifrate:id,
+
+
+            });
+            // alert("toigetprobyid cua rate roi");
+            // console.log(this.state.listPsOfC)
+        }).catch(err1=>{alert("Get productsOfC fail!")});
+        // this.setState({
+        //     // filter:this.state.product.filter(x=>x.rating>id)
+        //     ifrate:id,
+        //
+        //     filter:this.state.filter.filter(x=>((this.getmaincat(x.tbl_category_id)===this.state.ifcat) &&
+        //         (x.rating>this.state.ifrate) &&
+        //         (x.price>=this.state.ifprice) && (x.price<=(this.state.ifprice1))))
+        //
+        // })
+        // this.filtermulti(event)
         addjs();
     }
+    pricefilter=event=>{
+        axios.get('https://organicshoptl.herokuapp.com/api/categories/'+this.state.ifcat).then(res =>{
+            // alert("catloc"+this.state.ifcat);
+            this.setState({
+                isfilter:true,
+
+                // filter:res.data,
+                filter:res.data.filter(x=>(
+                    (x.rating>=this.state.ifrate)
+                    &&
+                    (x.price>=this.state.sliderValues[0]*1000) &&
+                    (x.price<=this.state.sliderValues[1]*1000)
+                )),
+                ifprice:this.state.sliderValues[0]*1000,
+                ifprice1:this.state.sliderValues[1]*1000,
+
+
+            });
+            // alert("toigetprobyid cua rate roi");
+            // console.log(this.state.listPsOfC)
+        }).catch(err1=>{alert("Get productsOfC fail!")});
+        // this.setState({
+        //     isfilter:true,
+        //     // filter:this.state.product.filter(x=> (x.price>(this.state.sliderValues[0]*1000)) && (x.price<(this.state.sliderValues[1]*1000)))
+        //     ifprice:this.state.sliderValues[0]*1000,
+        //     ifprice1:this.state.sliderValues[1]*1000,
+        //
+        //     filter:this.state.product.filter(x=>(this.getmaincat(x.tbl_category_id)===this.state.ifcat) &&
+        //         (x=>x.rating>this.state.ifrate) &&
+        //         (x.price>=this.state.ifprice) && (x.price<=(this.state.ifprice1)))
+        //
+        // })
+        // this.filtermulti(event)
+        addjs();
+    }
+    createRate(rating) {
+        let rate = [];
+        // Outer loop to create parent
+        for (let i = 1; i <= rating; i++) {
+            rate.push(<i className="fa fa-star m-rl-1"/>);
+        }
+        return rate;
+    }
     sortfilter=event=>{
+
         this.setState({
             isfilter:true
         })
         switch (event.target.value) {
             case '1':
                 this.setState({
-                    filter:this.state.product.sort(function(a, b) {
+                    filter:this.state.filter.sort(function(a, b) {
                         if(a.name.toLowerCase() < b.name.toLowerCase()) return -1;
                         if(a.name.toLowerCase() > b.name.toLowerCase()) return 1;
                         return 0;
@@ -102,19 +270,19 @@ class Shop extends Component {
                 break;
             case '2':{
                 this.setState({
-                    filter:this.state.product.sort((a,b)=> a.price-b.price)
+                    filter:this.state.filter.sort((a,b)=> a.price-b.price)
                 })
                 break;
             }
             case '3':{
                 this.setState({
-                    filter:this.state.product.sort((a,b)=> b.price-a.price)
+                    filter:this.state.filter.sort((a,b)=> b.price-a.price)
                 })
                 break;
             }
             default:
                 this.setState({
-                    filter:this.state.product
+                    filter:this.state.filter
                 })
                 break;
         }
@@ -128,19 +296,11 @@ class Shop extends Component {
         })
         addjs();
     }
-    pricefilter=event=>{
-        this.setState({
-            isfilter:true,
-            filter:this.state.product.filter(x=> (x.price>(this.state.sliderValues[0]*1000)) && (x.price<(this.state.sliderValues[1]*1000)))
-        })
-        addjs();
-    }
+
     //QUAN
-    addCart = product =>e=>{
-        e.preventDefault();
-        product.quantity=1;
+    addCart(product){
         this.props.addCart(product);
-        addjs();
+    //    addjs();
     }
     //QUAN
   render() {
@@ -196,7 +356,7 @@ class Shop extends Component {
                                             <div style={{ width: '98%' , margin: 0 }}>
                                                 {/*<p>Range with custom handle</p>*/}
                                                 {sliderValues[0]}.000 - {sliderValues[1]}.000VND
-                                                <Range onChange={this.handleChange} min={0} max={200} defaultValue={sliderValues} tipFormatter={value => `${value}`} />
+                                                <Range onChange={this.handleChange} min={0} max={1000} defaultValue={sliderValues} tipFormatter={value => `${value}`} />
                                             </div>
                                             <div className="flex-sb-m flex-w p-t-16">
                                                 {/*<div className="txt-s-115 cl9 p-t-10 p-b-10 m-r-20">*/}
@@ -221,50 +381,52 @@ class Shop extends Component {
                                             DANH MỤC
                                         </h4>
                                         <ul>
+                                            {this.state.categories.map((item,index) => { return (item.id <=4)?
                                             <li className="p-b-5">
-                                                <a href="javascript:void(0)" onClick={this.catfilter(0)}
+                                                <a href="javascript:void(0)" onClick={this.catfilter(item.id)}
                                                    className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">
                                                   <span className="m-r-10">
-                                                      Tất cả sản phẩm
+                                                      {item.name}
                                                   </span>
                                                     <span>
-                                                        {this.state.product.length}
+                                                        {this.state.soL.map((item1,index1) => { return (item1.id === item.id)?
+                                                            <div key={index1}>{item1.lengthC}</div>:null})}
                                                   </span>
                                                 </a>
-                                            </li>
-                                            <li className="p-b-5">
-                                                <a href="javascript:void(0)" onClick={this.catfilter(1)}
-                                                   className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">
-                                                  <span className="m-r-10">
-                                                      Rau,củ
-                                                  </span>
-                                                    <span>
-                                                        2
-                                                  </span>
-                                                </a>
-                                            </li>
-                                            <li className="p-b-5">
-                                                <a href="javascript:void(0)" onClick={this.catfilter(2)}
-                                                   className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">
-                                                  <span className="m-r-10">
-                                                      Trái cây
-                                                  </span>
-                                                    <span>
-                                                        2
-                                                  </span>
-                                                </a>
-                                            </li>
-                                            <li className="p-b-5">
-                                                <a href="javascript:void(0)" onClick={this.catfilter(3)}
-                                                   className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">
-                                                  <span className="m-r-10">
-                                                      Đồ khô
-                                                  </span>
-                                                    <span>
-                                                        2
-                                                  </span>
-                                                </a>
-                                            </li>
+                                            </li>:null})}
+                                            {/*<li className="p-b-5">*/}
+                                                {/*<a href="javascript:void(0)" onClick={this.catfilter(1)}*/}
+                                                   {/*className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">*/}
+                                                  {/*<span className="m-r-10">*/}
+                                                      {/*Rau,củ*/}
+                                                  {/*</span>*/}
+                                                    {/*<span>*/}
+                                                        {/*2*/}
+                                                  {/*</span>*/}
+                                                {/*</a>*/}
+                                            {/*</li>*/}
+                                            {/*<li className="p-b-5">*/}
+                                                {/*<a href="javascript:void(0)" onClick={this.catfilter(2)}*/}
+                                                   {/*className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">*/}
+                                                  {/*<span className="m-r-10">*/}
+                                                      {/*Trái cây*/}
+                                                  {/*</span>*/}
+                                                    {/*<span>*/}
+                                                        {/*2*/}
+                                                  {/*</span>*/}
+                                                {/*</a>*/}
+                                            {/*</li>*/}
+                                            {/*<li className="p-b-5">*/}
+                                                {/*<a href="javascript:void(0)" onClick={this.catfilter(3)}*/}
+                                                   {/*className="flex-sb-m flex-w txt-s-101 cl6 hov-cl10 trans-04 p-tb-3">*/}
+                                                  {/*<span className="m-r-10">*/}
+                                                      {/*Đồ khô*/}
+                                                  {/*</span>*/}
+                                                    {/*<span>*/}
+                                                        {/*2*/}
+                                                  {/*</span>*/}
+                                                {/*</a>*/}
+                                            {/*</li>*/}
                                         </ul>
                                     </div>
                                     <hr/>
@@ -401,42 +563,54 @@ class Shop extends Component {
                                     <div className="shop-grid">
                                         {this.state.isLoading?(<ReactLoading style={{width:'100px',margin:'auto'}} type={"bubbles"} color={"green"} height={'10'} width={'10'} />):(
                                         <div className="row">
-                                            {this.state.isfilter?this.state.filter.map((item,index) =>
-                                                    <div key={index} className="col-sm-6 col-lg-4 p-b-30">
-                                                        <div className="block1">
-                                                            <div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">
-                                                                <img style={{width:'267px',height:'352px'}} src={'https://organic-store.herokuapp.com/api/shop/image/'+item.id} alt="IMG"/>
-                                                                <div className="block1-content flex-col-c-m p-b-46">
-                                                                    <a href="product-single.html"
-                                                                       className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">
-                                                                        {item.name}
-                                                                    </a>
-                                                                    <span
-                                                                        className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">
+                                            {this.state.isfilter?this.state.filter.map((item,index) => {
+                                                return ((index >= (6 * (this.state.curpage - 1))) && (index <= (6 * this.state.curpage - 1)))?
+                                                        <div key={index} className="col-sm-6 col-lg-4 p-b-30">
+                                                            <div className="block1">
+                                                                <div
+                                                                    className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">
+                                                                    <img style={{width: '267px', height: '352px'}}
+                                                                         src={'https://organic-store.herokuapp.com/api/product/' + item.id}
+                                                                         alt="IMG"/>
+                                                                    <div className="block1-content flex-col-c-m p-b-46">
+                                                                        <Link to={'/singleproduct/'+item.id}
+                                                                           className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">
+                                                                            {item.name}
+                                                                        </Link>
+                                                                        <span>
+                                                                        {this.createRate(item.rating)}
+                                                                    </span>
+                                                                        <span
+                                                                            className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">
                                                                 {item.price}
                                                           </span>
-                                                                    <div className="block1-wrap-icon flex-c-m flex-w trans-05">
-                                                                        <Link to={'/singleproduct/'+item.id}
-                                                                           className="block1-icon flex-c-m wrap-pic-max-w">
-                                                                            <img src="images/icons/icon-view.png" alt="ICON"/>
-                                                                        </Link>
-                                                                        <a  onClick={this.addCart(item)} href="javascript:void(0)"
-                                                                           className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">
-                                                                            <img src="images/icons/icon-cart.png" alt="ICON"/>
-                                                                        </a>
-                                                                        <a href="wishlist.html"
-                                                                           className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">
-                                                                            <img className="icon-addwish-b1"
-                                                                                 src="images/icons/icon-heart.png" alt="ICON"/>
-                                                                            <img className="icon-addedwish-b1"
-                                                                                 src="images/icons/icon-heart2.png" alt="ICON"/>
-                                                                        </a>
+                                                                        <div
+                                                                            className="block1-wrap-icon flex-c-m flex-w trans-05">
+                                                                            <Link to={'/singleproduct/' + item.id}
+                                                                                  className="block1-icon flex-c-m wrap-pic-max-w">
+                                                                                <img src="images/icons/icon-view.png"
+                                                                                     alt="ICON"/>
+                                                                            </Link>
+                                                                            <button onClick={this.addCart.bind(this, item)}
+                                                                                    className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">
+                                                                                <img src="images/icons/icon-cart.png"
+                                                                                     alt="ICON"/>
+                                                                            </button>
+                                                                            <a href="wishlist.html"
+                                                                               className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">
+                                                                                <img className="icon-addwish-b1"
+                                                                                     src="images/icons/icon-heart.png"
+                                                                                     alt="ICON"/>
+                                                                                <img className="icon-addedwish-b1"
+                                                                                     src="images/icons/icon-heart2.png"
+                                                                                     alt="ICON"/>
+                                                                            </a>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>
-                                                )
+                                                        </div>:null
+                                                })
                                                 :this.state.product.map((item,index) => {
                                                     return ((index >= (6 * (this.state.curpage - 1))) && (index <= (6 * this.state.curpage - 1)))?
                                                         <div key={index} className="col-sm-6 col-lg-4 p-b-30">
@@ -444,13 +618,16 @@ class Shop extends Component {
                                                                 <div
                                                                     className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">
                                                                     <img style={{width: '267px', height: '352px'}}
-                                                                         src={'https://organic-store.herokuapp.com/api/shop/image/' + item.id}
+                                                                         src={'https://organic-store.herokuapp.com/api/product/' + item.id}
                                                                          alt="IMG"/>
                                                                     <div className="block1-content flex-col-c-m p-b-46">
-                                                                        <a href="product-single.html"
+                                                                        <Link to={'/singleproduct/'+item.id}
                                                                            className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">
                                                                             {item.name}
-                                                                        </a>
+                                                                        </Link>
+                                                                        <span>
+                                                                            {this.createRate(item.rating)}
+                                                                        </span>
                                                                         <span
                                                                             className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">
                                                                 {item.price}
@@ -462,11 +639,11 @@ class Shop extends Component {
                                                                                 <img src="images/icons/icon-view.png"
                                                                                      alt="ICON"/>
                                                                             </Link>
-                                                                            <a onClick={this.addCart(item)} href="javascript:void(0)"
+                                                                            <button onClick={this.addCart.bind(this,item)}
                                                                                className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">
                                                                                 <img src="images/icons/icon-cart.png"
                                                                                      alt="ICON"/>
-                                                                            </a>
+                                                                            </button>
                                                                             <a href="wishlist.html"
                                                                                className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">
                                                                                 <img className="icon-addwish-b1"
@@ -485,34 +662,43 @@ class Shop extends Component {
                                         </div>)}
                                     </div>
                                     {/* Shop list */}
+                                    {this.state.isLoading?(<ReactLoading style={{width:'100px',margin:'auto'}} type={"bubbles"} color={"green"} height={'10'} width={'10'} />):(
                                     <div className="shop-list dis-none">
+
+                                        {this.state.isfilter?this.state.filter.map((item,index) => {
+                                                return ((index >= (6 * (this.state.curpage - 1))) && (index <= (6 * this.state.curpage - 1)))?
                                         <div className="row p-b-30">
                                             <div className=" col-sm-5 col-lg-4">
                                                 {/*<a href="product-single.html"*/}
                                                    {/*className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">*/}
-                                                <NavLink to="/singleProduct" className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">
-                                                    <img src="images/product-37.jpg" alt="PRODUCT"/>
+                                                <Link to={'/singleproduct/' + item.id} className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">
+                                                    <img src={'https://organic-store.herokuapp.com/api/product/' + item.id}
+                                                         alt="IMG"/>
+                                                    {/*<img src="images/product-37.jpg" alt="PRODUCT"/>*/}
                                                 {/*</a>*/}
-                                                </NavLink>
+                                                </Link>
                                             </div>
                                             <div className=" col-sm-7 col-lg-8">
                                                 <div className="p-t-5 p-b-20">
                                                     <div className="flex-w flex-sb-m">
                                                         {/*<a href="product-single.html"*/}
                                                            {/*className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">*/}
-                                                        <NavLink to="/singleProduct" className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">
-                                                            Strawberry
+                                                        {/*<NavLink to="/singleProduct" className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">*/}
+                                                            <Link to={'/singleproduct/'+item.id}
+                                                                  className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">
+                                                                {item.name}
+                                                            </Link>
                                                         {/*</a>*/}
-                                                        </NavLink>
+                                                        {/*</NavLink>*/}
                                                         {/*<a href="wishlist.html"*/}
                                                            {/*className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">*/}
-                                                        <NavLink to="/wishlist" className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">
+                                                        <Link to="/wishlist" className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">
                                                             <img className="icon-main trans-04"
                                                                  src="images/icons/icon-heart-color.png" alt="ICON"/>
                                                             <img className="ab-t-l icon-hov trans-04"
                                                                  src="images/icons/icon-heart-color2.png" alt="ICON"/>
                                                         {/*</a>*/}
-                                                        </NavLink>
+                                                        </Link>
                                                     </div>
                                                     <span className="txt-m-117 cl9">
                             21vnd
@@ -520,42 +706,62 @@ class Shop extends Component {
                                                     <p className="txt-s-101 cl6 p-t-18">
                                                         farm hiếu
                                                     </p>
+
                                                     <div className="flex-w p-t-29">
-                                                        <button
-                                                            className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">
+                                                        <button onClick={this.addCart.bind(this,item)}
+                                                                className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">
+                                                            {/*<img src="images/icons/icon-cart.png"*/}
+                                                            {/*alt="ICON"/>*/}
                                                             Thêm vào giỏ
                                                         </button>
+                                                        {/*<button*/}
+                                                            {/*className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">*/}
+                                                            {/*Thêm vào giỏ*/}
+                                                        {/*</button>*/}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>:null
+                                                })
+                                                :this.state.product.map((item,index) => {
+                                                    return ((index >= (6 * (this.state.curpage - 1))) && (index <= (6 * this.state.curpage - 1)))?
                                         <div className="row p-b-30">
                                             <div className=" col-sm-5 col-lg-4">
                                                 {/*<a href="product-single.html"*/}
                                                    {/*className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">*/}
-                                                <NavLink to="/singleProduct" className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">
-                                                    <img src="images/product-38.jpg" alt="PRODUCT"/>
-                                                {/*</a>*/}
-                                                </NavLink>
+                                                <Link to={'/singleproduct/' + item.id} className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">
+                                                    <img src={'https://organic-store.herokuapp.com/api/product/' + item.id}
+                                                         alt="IMG"/>
+                                                    {/*<img src="images/product-37.jpg" alt="PRODUCT"/>*/}
+                                                    {/*</a>*/}
+                                                </Link>
+                                                {/*<NavLink to="/singleProduct" className="wrap-pic-w bo-all-1 bocl12 hov8 trans-04">*/}
+                                                    {/*<img src="images/product-38.jpg" alt="PRODUCT"/>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*</NavLink>*/}
                                             </div>
                                             <div className=" col-sm-7 col-lg-8">
                                                 <div className="p-t-5 p-b-20">
                                                     <div className="flex-w flex-sb-m">
                                                         {/*<a href="product-single.html"*/}
                                                            {/*className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">*/}
-                                                        <NavLink to="/singleProduct" className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">
-                                                            Cà chua
-                                                        {/*</a>*/}
-                                                        </NavLink>
+                                                        {/*<NavLink to="/singleProduct" className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">*/}
+                                                            {/*Cà chua*/}
+                                                        {/*/!*</a>*!/*/}
+                                                        {/*</NavLink>*/}
+                                                        <Link to={'/singleproduct/'+item.id}
+                                                              className="txt-m-120 cl3 hov-cl10 trans-04 m-r-20 js-name1">
+                                                            {item.name}
+                                                        </Link>
                                                         {/*<a href="wishlist.html"*/}
                                                            {/*className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">*/}
-                                                        <NavLink to="/wishlist" className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">
+                                                        <Link to="/wishlist" className="lh-00 pos-relative how-icon1 m-tb-15 js-addwish1">
                                                             <img className="icon-main trans-04"
                                                                  src="images/icons/icon-heart-color.png" alt="ICON"/>
                                                             <img className="ab-t-l icon-hov trans-04"
                                                                  src="images/icons/icon-heart-color2.png" alt="ICON"/>
                                                         {/*</a>*/}
-                                                        </NavLink>
+                                                        </Link>
                                                     </div>
                                                     <span className="txt-m-117 cl9">
                             15vnd
@@ -564,20 +770,27 @@ class Shop extends Component {
                                                         farm
                                                     </p>
                                                     <div className="flex-w p-t-29">
-                                                        <button
-                                                            className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">
+                                                        <button onClick={this.addCart.bind(this,item)}
+                                                                className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">
+                                                            {/*<img src="images/icons/icon-cart.png"*/}
+                                                            {/*alt="ICON"/>*/}
                                                             Thêm vào giỏ
                                                         </button>
+                                                        {/*<button*/}
+                                                            {/*className="flex-c-m txt-s-103 cl0 bg10 size-a-2 hov-btn2 trans-04 js-addcart1">*/}
+                                                            {/*Thêm vào giỏ*/}
+                                                        {/*</button>*/}
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>:null
+                                                })}
 
-                                    </div>
+                                    </div>)}
                                     {/* Pagination */}
-                                    {!this.state.isLoading?(<div className="flex-w flex-c-m p-t-47">
-                                        {this.createPage}
-                                    </div>):null}
+                                    <div className="flex-w flex-c-m p-t-47">
+                                        {this.createPage()}
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -11,6 +11,8 @@ export const listPARequest = () => {
     return (dispatch) => {
         return callApi(0,'products','GET',null).then( res => {
             dispatch(listPA(res.data))// save d to list
+        }).catch(function (error) {
+            console.log(error)
         });
     }
 }
@@ -27,6 +29,8 @@ export const PSRequest = (id) => {
         // return callApi(0,'products','GET',null).then( res => {
         return callApi(0,`product/${id}`,'GET',null).then (res =>{
             dispatch(PS(res.data))// save d to list
+        }).catch(function (error) {
+            console.log(error)
         });
     }
 }
@@ -40,14 +44,32 @@ export const PS = (products) => {
     }
 }
 
-export const listPIDCARequest = (id) => {
+// export const listPIDCARequest = (id) => {
+//     return (dispatch) => {
+//         return callApi(0,'products','GET',null).then( res => {
+//             dispatch(listPA(res.data,id))// save d to list
+//         }).catch(function (error) {
+//             console.log(error)
+//         });
+//     }
+// }
+// export const listPIDCARequest = (id) => {
+//     return (dispatch) => {
+//         return callApi(0,'products','GET',null).then( res => {
+//             dispatch(listPIDCA(res.data,id))// save d to list
+//         }).catch(function (error) {
+//             console.log(error)
+//         });
+//     }
+// }
+export const listPIDCARequest = (id,data) => {
+    alert(data);
     return (dispatch) => {
-        return callApi(0,'products','GET',null).then( res => {
-            dispatch(listPA(res.data,id))// save d to list
-        });
+        return
+        dispatch(listPIDCA(data,id))// save d to list
+
     }
 }
-
 export const listPIDCA = (products,id) => {
     alert(products.id);
     return {
@@ -62,6 +84,8 @@ export const listCARequest = () => {
     return (dispatch) => {
         return callApi(1,'categories','GET',null).then( res => {
             dispatch(listCA(res.data))// save d to list
+        }) .catch(function (error) {
+            console.log(error)
         });
     }
 }
@@ -77,7 +101,9 @@ export const listCIDPRequest = (id) => {
     return dispatch => {
         // return callApi(1,`categories/${id}`,'GET',null).then (res =>{
         return callApi(1,'categories','GET',null).then( res => {
-            dispatch(listCIDP(id, res.data));
+            dispatch(listCIDP(id, res.data))
+        }).catch(function (error) {
+            console.log(error);
         })
     }
 }
@@ -94,9 +120,14 @@ export const listCIDPCRequest = (id) => {
         // return callApi(1,`categories/${id}`,'GET',null).then (res =>{
         return callApi(1,'categories','GET',null).then( res => {
             dispatch(listCIDPC(id, res.data));
+        }).catch(function (error) {
+            console.log(error)
         })
     }
 }
+// export const listCIDPCRequest = (id,data) => {
+//     return listCIDPC(id, data);
+// }
 export const listCIDPC = (id, categories) => {
     return {
         // alert("listCIDPC"+id);
@@ -126,12 +157,51 @@ export const downQuantity = (product) => {
         product //payload: products
     }
 }
-// export const onDetail = (product) => {
-//     return {
-//         type : 'ON_DETAIL',
-//         product //payload: products
-//     }
-// }
 //QUAN
+export const pending = () =>{
+    return {
+        type:'PENDING'
+    }
+}
+export const loginSuccess = (data) =>{
+    return {
+        type:'LOGIN_SUCCESS',
+        data
+    }
+}
+export const loginError = () =>{
+    return {
+        type:'LOGIN_ERROR'
+    }
+}
+export const logout= () =>{
+    return {
+        type:'LOGOUT'
+    }
+}
+export function login(email,password){
+    return dispatch =>{
+        dispatch(pending())
+        Axios.post('https://api-organic.herokuapp.com/authenticate',{
+            email:email,
+            password:password
+        }).then(res=>{
+            alert("Login Success!")
+            dispatch(loginSuccess(res.data))
+        }).catch(err=>{
+            alert("Login Error!")
+            dispatch(loginError());
+        });
+    };
+}
+export const addWithQuantity = (product,quantity) => {
+    return {
+        type : 'ADD_WITH_QUANTITY',
+        product,
+        quantity
+    }
+}
+//QUAN
+
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import addjs from '../jslib/jslib';
-class LostPass extends Component {
+class AccountLostPass extends Component {
   componentDidMount(){
     addjs();
   }
@@ -50,4 +50,4 @@ class LostPass extends Component {
     );
   }
 }
-export default LostPass
+export default AccountLostPass

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import addjs from '../jslib/jslib';
-class BlogSingle extends Component {
+class SingleBlog extends Component {
   componentDidMount(){
     addjs();
   }
@@ -563,4 +563,4 @@ class BlogSingle extends Component {
     );
   }
 }
-export default BlogSingle
+export default SingleBlog

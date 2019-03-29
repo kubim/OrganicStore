@@ -19,6 +19,7 @@ import ReactDOM from 'react-dom';
 // import SingleProduct from "../SingleProduct";
 // import Shop from "../Shop";
 
+import registerServiceWorker from '../../registerServiceWorker';
 
 import Axios from 'axios';
 import {listCIDPCRequest} from "../../actions";
@@ -34,18 +35,20 @@ class ProductsH extends Component {
 
     }
     componentDidMount () {
+        alert("denPrSH roi"+this.props);
         // this.props.listPALL();
         // this.props.listCALL();
-        //this.props.listCIDPCCALL(1);
+        this.props.listCIDPCCALL(1);
         // var {products1}= this.props.products;
-        //addjs();
+        addjs();
         // console.log(this.props.lispPA());
     }
 
     ic(i) {
         alert(i + "editstart");
-        if(i===null) i=0;
+        i===null?0:i;
         this.setState({ide:i});
+
     }
     render() {
 
@@ -57,7 +60,9 @@ class ProductsH extends Component {
 
         const ListItem = this.props.categories.map((item, index) => {
 
-            return (
+            return
+            // (
+                (index<=6)?
                 <div key = {index} className="of-hidden size-w-2 respon2" style={{margin: 'auto', width: '25%'}}>
                     <div className="hov-img1 pos-relative">
                         <img src="images/vegetable.jpg" alt="IMG" />
@@ -77,8 +82,8 @@ class ProductsH extends Component {
                         </Link>
                         {/*</a>*/}
                     </div>
-                </div>
-            )
+                </div>:null
+            // )
         })
 
         return (
@@ -101,259 +106,259 @@ class ProductsH extends Component {
                             </h3>
                         </div>
 
-                        <div>
-                            <div className="p-b-46">
-                                <div className="flex-w flex-c-m filter-tope-group">
-                                    {this.props.categories.map((cat, index) =>
-                                        <button onClick={this.ic.bind(this,cat.id)
-                                        } className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10 how-active1" data-filter={`${cat.id}`}>
-                                            {cat.name}
-                                        </button>
-                                    )}
-                                    {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".vegetable-fill">*/}
+                            <div>
+                        <div className="p-b-46">
+                            <div className="flex-w flex-c-m filter-tope-group">
+                                {this.props.categories.map((cat, index) =>
+                                <button onClick={this.ic.bind(this,cat.id)
+                                } href="javascript:void(0)" className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10 how-active1" data-filter={`${cat.id}`}>
+                                    {cat.name}
+                                </button>
+                                )}
+                                {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".vegetable-fill">*/}
                                     {/*Rau củ*/}
-                                    {/*</button>*/}
-                                    {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".fruit-fill">*/}
+                                {/*</button>*/}
+                                {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".fruit-fill">*/}
                                     {/*Trái cây Việt Nam*/}
-                                    {/*</button>*/}
-                                    {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".fruit-juic-fill">*/}
+                                {/*</button>*/}
+                                {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".fruit-juic-fill">*/}
                                     {/*Trái cây nhập khẩu*/}
-                                    {/*</button>*/}
-                                    {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".dried-fill">*/}
+                                {/*</button>*/}
+                                {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".dried-fill">*/}
                                     {/*Đồ khô*/}
-                                    {/*</button>*/}
-                                    {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".other-fill">*/}
+                                {/*</button>*/}
+                                {/*<button className="txt-m-104 cl9 hov2 trans-04 p-rl-27 p-b-10" data-filter=".other-fill">*/}
                                     {/*Khác*/}
-                                    {/*</button>*/}
-                                </div>
+                                {/*</button>*/}
                             </div>
-                            <ProductH idp={ this.state.ide===null?0:this.state.ide }/>
-                            {/*<div className="row isotope-grid">*/}
+                        </div>
+                                <ProductH idp={ this.state.ide===null?0:this.state.ide } pro={this.props} />
+                        {/*<div className="row isotope-grid">*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item fruit-juic-fill other-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-01.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Red pumpkin*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*21vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-01.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Red pumpkin*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*21vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item fruit-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-02.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Strawberry*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*23vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-02.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Strawberry*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*23vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item vegetable-fill dried-fill other-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-03.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Cauliflower*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*19vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-03.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Cauliflower*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*19vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item vegetable-fill dried-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-04.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Vegetable*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*22vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-04.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Vegetable*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*22vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item fruit-fill fruit-juic-fill other-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-05.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Bell pepper*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*12vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-05.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Bell pepper*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*12vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="/shop" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
                             {/*/!* - *!/*/}
                             {/*<div className="col-sm-6 col-md-4 col-lg-3 p-b-75 isotope-item fruit-juic-fill">*/}
-                            {/*/!* Block1 *!/*/}
-                            {/*<div className="block1">*/}
-                            {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
-                            {/*<img src="images/product-06.jpg" alt="IMG" />*/}
-                            {/*<div className="block1-content flex-col-c-m p-b-46">*/}
-                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
-                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
-                            {/*Beetroot*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
-                            {/*9vnd*/}
-                            {/*</span>*/}
-                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
-                            {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
-                            {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
-                            {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
-                            {/*<Link to="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
-                            {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
-                            {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
-                            {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
-                            {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
-                            {/*</Link>*/}
-                            {/*/!*</a>*!/*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
-                            {/*</div>*/}
+                                {/*/!* Block1 *!/*/}
+                                {/*<div className="block1">*/}
+                                    {/*<div className="block1-bg wrap-pic-w bo-all-1 bocl12 hov3 trans-04">*/}
+                                        {/*<img src="images/product-06.jpg" alt="IMG" />*/}
+                                        {/*<div className="block1-content flex-col-c-m p-b-46">*/}
+                                            {/*/!*<a href="product-single.html" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*!/*/}
+                                            {/*<Link to="/singleProduct" className="txt-m-103 cl3 txt-center hov-cl10 trans-04 js-name-b1">*/}
+                                                {/*Beetroot*/}
+                                            {/*</Link>*/}
+                                            {/*/!*</a>*!/*/}
+                                            {/*<span className="block1-content-more txt-m-104 cl9 p-t-21 trans-04">*/}
+                        {/*9vnd*/}
+                      {/*</span>*/}
+                                            {/*<div className="block1-wrap-icon flex-c-m flex-w trans-05">*/}
+                                                {/*/!*<a href="product-single.html" className="block1-icon flex-c-m wrap-pic-max-w">*!/*/}
+                                                {/*<Link to="/singleProduct" className="block1-icon flex-c-m wrap-pic-max-w">*/}
+                                                    {/*<img src="images/icons/icon-view.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*!/*/}
+                                                {/*<Link to="#" className="block1-icon flex-c-m wrap-pic-max-w js-addcart-b1">*/}
+                                                    {/*<img src="images/icons/icon-cart.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                                {/*/!*<a href="wishlist.html" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*!/*/}
+                                                {/*<Link to="/wishlist" className="block1-icon flex-c-m wrap-pic-max-w js-addwish-b1">*/}
+                                                    {/*<img className="icon-addwish-b1" src="images/icons/icon-heart.png" alt="ICON" />*/}
+                                                    {/*<img className="icon-addedwish-b1" src="images/icons/icon-heart2.png" alt="ICON" />*/}
+                                                {/*</Link>*/}
+                                                {/*/!*</a>*!/*/}
+                                            {/*</div>*/}
+                                        {/*</div>*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
                             {/*</div>*/}
 
-                            {/*</div>*/}
-                        </div>
+                        {/*</div>*/}
+                            </div>
 
                     </div>
                 </div>
@@ -381,6 +386,9 @@ const mapDispatchToProps = (dispatch, props) => {
         // },
         // listCIDPCALL : (id) => {
         //     dispatch(listCIDPRequest(id));
+        // },
+        // listCIDPCCALL : (id) => {
+        //     dispatch(listCIDPCRequest(id));
         // },
         listCIDPCCALL : (id) => {
             dispatch(listCIDPCRequest(id));

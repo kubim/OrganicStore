@@ -41,6 +41,19 @@ class Cart extends Component {
           </div>
         </section>
         {/* content page */}
+        {this.props.cart.length===0?(
+        <div className="bg0 p-tb-100">
+          <div className="container">
+              <div className="flex-col-l p-t-68">
+                <span className="txt-m-123 cl3 p-b-18">
+                  Chưa có sản phẩm nào
+                </span>
+                <Link  to="/shop/1" className="flex-c-m txt-s-105 cl0 bg10 size-a-34 hov-btn2 trans-04 p-rl-10 m-t-43">
+                  <button  className="txt-s-101 cl9 hov-cl10 trans-04" style={{color: 'white'}}>Tiếp tục mua sắm</button>
+                </Link>
+              </div>
+          </div>
+        </div>):(
         <div className="bg0 p-tb-100">
           <div className="container">
             <form>
@@ -116,13 +129,13 @@ class Cart extends Component {
                     {this.props.sum}vnd
                   </span>
                 </div>
-                <button className="flex-c-m txt-s-105 cl0 bg10 size-a-34 hov-btn2 trans-04 p-rl-10 m-t-43">
-                  <Link to="/checkout" className="txt-s-101 cl9 hov-cl10 trans-04" style={{color: 'white'}}>Thanh toán</Link>
-                </button>
+                <Link  to="/checkout" className="flex-c-m txt-s-105 cl0 bg10 size-a-34 hov-btn2 trans-04 p-rl-10 m-t-43">
+                  <button  className="txt-s-101 cl9 hov-cl10 trans-04" style={{color: 'white'}}>Thanh toán</button>
+                </Link>
               </div>
             </form>
           </div>
-        </div>
+        </div>)}
       </div>
     );
   }

@@ -19,21 +19,26 @@ import ReactDOM from 'react-dom';
 // import SingleProduct from "../SingleProduct";
 // import Shop from "../Shop";
 
+import registerServiceWorker from '../../registerServiceWorker';
+
 import Axios from 'axios';
 import {listCIDPCRequest} from "../../actions";
 import ItemQuantityH from "./ItemQuantityH";
 // import Link from "react-router-dom/es/Link";
 
 class ItemH extends Component {
-    componentDidMount () {
+    async componentDidMount () {
         // this.props.listPALL();
         // this.props.listCALL();
         // this.props.listCIDPCCALL(2);
         // var {products1}= this.props.products;
-        //addjs();
+        addjs();
         // console.log(this.props.lispPA());
-        //this.props.listCIDPCALL(1);
+
+        this.props.listCIDPCALL(1);
     }
+
+
     render() {
 
         const ListItem = this.props.categories.map((item, index) => {

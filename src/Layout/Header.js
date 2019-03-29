@@ -1,37 +1,55 @@
-import React, { Component } from 'react';
+import React, { Component} from 'react';
 import {Link} from 'react-router-dom';
-import {delCart} from "../actions/index";
+import {delCart, login, logout} from "../actions/index";
 import {connect}from "react-redux";
+import ReactLoading from 'react-loading';
+import addjs from "../jslib/jslib";
 class Header extends Component {
   constructor(props) {
     super(props);
     this.state={
-      isLogin:false,
       show:'',
     }
   }
   login(){
-    this.setState({
-      isLogin:true,
-    })
+    // this.setState({
+    //   isLogin:true,
+    // })
+    this.props.login(this.refs.email.value,this.refs.password.value);
   }
   logout(){
-    this.setState({
-      isLogin:false,
-    })
+    this.props.logout();
   }
   onDeleteCart(product){
     this.props.delCart(product);
   }
   menuHandle(menu){
-    if(this.state.show==='' || this.state.show!==menu){
+    if(this.state.show==='' || this.state.show!==menu) {
       this.setState({
-        show:menu,
+        show: menu,
       })
     }else{
       this.setState({
         show:'',
       })
+    }
+    if(menu==="mobilemenu"){
+      const $ = window.$;
+      $(this.refs['mobilemenu']).slideToggle()
+    }
+    if(menu==="mobilemainmenu"){
+      const $ = window.$;
+      this.setState({
+        show: "mobilemenu",
+      })
+      $(this.refs['mobilemainmenu']).slideToggle()
+    }
+    if(menu.includes("mobilesubmenu")){
+      this.setState({
+        show: "mobilemenu",
+      })
+      const $ = window.$;
+      $(this.refs[menu]).slideToggle();
     }
     // try {
     //     $('.wrap-menu-click').each(function(){
@@ -72,7 +90,7 @@ class Header extends Component {
                   <div className="menu-desktop">
                     <ul className="main-menu">
                       <li>
-                        <Link to="/shop">SẢN PHẨM</Link>
+                        <Link onClick={this.menuHandle.bind(this,'direct')} to="/shop/1">SẢN PHẨM</Link>
                         <ul className="sub-menu">
                           <li><a href="shop-sidebar-grid.html">RAU CỦ</a>
                             <ul className="sub-menu">
@@ -114,7 +132,7 @@ class Header extends Component {
                       </div>
                     </div>
                     {/*...*/}
-                    {!this.state.isLogin?(
+                    {this.props.account===null?(
                     <div className={this.state.show==='login'?('show-menu-click showed wrap-cart-header h-full flex-m m-l-10 menu-click'):('wrap-cart-header h-full flex-m m-l-10 menu-click')}>
                       <div id="icon-login" className="icon-header-item flex-c-m trans-04">
                         <img onClick={this.menuHandle.bind(this,'login')} src="images/icons/icon-login.png" alt="login" />
@@ -122,11 +140,12 @@ class Header extends Component {
                       <div id="form-login" className="cart-header menu-click-child trans-04">
                         <form action="javascript:void(0)" onSubmit={this.login.bind(this)}>
                           <div className="p-b-24">
-                            <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="text" name="username" placeholder="Tên đăng nhập" />
+                            <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="text" ref="email" placeholder="email" />
                           </div>
                           <div className="p-b-24">
-                            <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="password" name="password" placeholder="Mật khẩu" />
+                            <input className="txt-s-120 cl3 size-a-21 bo-all-1 bocl15 p-rl-15 focus1" type="password" ref="password" placeholder="Mật khẩu" />
                           </div>
+                          {/*{this.props.pending?(<ReactLoading type={"bubbles"} color={"green"} />):null}*/}
                           <div className="flex-w flex-m p-t-15 p-b-10">
                             <input type="submit" className="flex-c-m txt-s-105 cl0 bg10 size-a-39 hov-btn2 trans-04 p-rl-10 m-r-18" />
                             <div className="flex-w flex-m p-tb-8">
@@ -145,9 +164,10 @@ class Header extends Component {
                         </a>
                         <div className="social">
                           <div className="social-inner">
-                            <a className="fa fa-2x fa-google btn btn-danger" href="#" />
-                            <a className="fa fa-2x fa-twitter btn btn-info" href="#" />
-                            <a className="fa fa-2x fa-facebook btn btn-primary" href="#" />
+                            <button className="fa fa-2x fa-google btn btn-danger" href="#" />
+                            <button className="fa fa-2x fa-twitter btn btn-info" href="#" />
+                            {/*<button className="fa fa-2x fa-facebook btn btn-primary"/>*/}
+
                           </div>
                         </div>
                       </div>
@@ -157,9 +177,9 @@ class Header extends Component {
                         <img onClick={this.menuHandle.bind(this,'profile')} src="images/icons/icon-user.png" alt="user" />
                       </div>  
                       <div className="cart-header menu-click-child trans-04">
-                        <a href="myaccount.html" className="txt-s-101 cl9 hov-cl10 trans-04">Chi Tiết</a><br />
-                        <a href="wishlist.html" className="txt-s-101 cl9 hov-cl10 trans-04">WishList</a><br />
-                        <a href="javascript:void(0)" onClick={this.logout.bind(this)} className="txt-s-101 cl9 hov-cl10 trans-04">Đăng xuất</a>
+                        <Link onClick={this.menuHandle.bind(this,'direct')} to="/myaccount" className="txt-s-101 cl9 hov-cl10 trans-04">Chi Tiết</Link><br />
+                        <Link onClick={this.menuHandle.bind(this,'direct')} to="/wishlist" className="txt-s-101 cl9 hov-cl10 trans-04">WishList</Link><br />
+                        <button href="javascript:void(0)" onClick={this.logout.bind(this)} className="txt-s-101 cl9 hov-cl10 trans-04">Đăng xuất</button>
                       </div>
                     </div>)}
                     {/*....*/}
@@ -186,11 +206,11 @@ class Header extends Component {
                                         {item.name}
                                       </a>
                                       <span className="txt-s-101 cl9">
-                                                                              {item.price}vnd
-                                                                            </span>
+                                        {item.price}vnd
+                                      </span>
                                       <span className="txt-s-109 cl12">
-                                                                              x{item.quantity}
-                                                                            </span>
+                                        x{item.quantity}
+                                      </span>
                                     </div>
                                   </div>
                                   <div className="size-w-14 flex-b">
@@ -205,25 +225,28 @@ class Header extends Component {
                                       alt="PRODUCT"/>)}
                           </div>
                         </div>
-                        <div className="flex-w flex-sb-m p-t-22 p-b-12">
-                          <span className="txt-m-103 cl3 p-r-20">
-                            Tổng tiền
-                          </span>
-                          <span className="txt-m-111 cl6">
-                             {this.props.sum}vnd
-                          </span>
-                        </div>
-                        <div className="flex-w flex-sb-m p-b-31">
-                          <span className="txt-m-103 cl3 p-r-20">
-                            Thành tiền
-                          </span>
-                          <span className="txt-m-111 cl10">
-                            {this.props.sum}
-                          </span>
-                        </div>
-                        <Link to="/cart" className="flex-c-m size-a-8 bg10 txt-s-105 cl13 hov-btn2 trans-04">
-                          Chi tiết
-                        </Link>  
+                        {this.props.cart.length!==0?(
+                        <div>
+                          <div className="flex-w flex-sb-m p-t-22 p-b-12">
+                            <span className="txt-m-103 cl3 p-r-20">
+                              Tổng tiền
+                            </span>
+                            <span className="txt-m-111 cl6">
+                               {this.props.sum}vnd
+                            </span>
+                          </div>
+                          <div className="flex-w flex-sb-m p-b-31">
+                            <span className="txt-m-103 cl3 p-r-20">
+                              Thành tiền
+                            </span>
+                            <span className="txt-m-111 cl10">
+                              {this.props.sum}vnd
+                            </span>
+                          </div>
+                          <Link onClick={this.menuHandle.bind(this,'direct')} to="/cart" className="flex-c-m size-a-8 bg10 txt-s-105 cl13 hov-btn2 trans-04">
+                            Chi tiết
+                          </Link>
+                        </div>):null}
                       </div>
                     </div>
                   </div>
@@ -248,15 +271,15 @@ class Header extends Component {
               <a href="home.html"><img src="images/icons/logochau.png" alt="IMG-LOGO" /></a>
             </div>
             {/* Icon header */}
-            <div className="wrap-icon-header flex-w flex-r-m h-full wrap-menu-click m-r-15">
+            <div  className="wrap-icon-header flex-w flex-r-m h-full wrap-menu-click m-r-15">
               <div className="h-full flex-m">
                 <div className="icon-header-item flex-c-m trans-04 js-show-modal-search" id="m-s">
-                  <img src="images/icons/icon-search.png" alt="SEARCH" />
+                  <img onClick={this.menuHandle.bind(this,'mobilesearch')} src="images/icons/icon-search.png" alt="SEARCH" />
                 </div>
               </div>
-              <div className="wrap-cart-header h-full flex-m m-l-5 menu-click">
+              <div className={this.state.show==='mobilecart'?('show-menu-click showed wrap-cart-header h-full flex-m m-l-10 menu-click'):('wrap-cart-header h-full flex-m m-l-10 menu-click')}>
                 <div className="icon-header-item flex-c-m trans-04 icon-header-noti" data-notify={2}>
-                  <img src="images/icons/icon-cart-2.png" alt="CART" />
+                  <img onClick={this.menuHandle.bind(this,'mobilecart')} src="images/icons/icon-cart-2.png" alt="CART" />
                 </div>
                 <div className="cart-header menu-click-child trans-04">
                   <div className="bo-b-1 bocl15">
@@ -329,14 +352,14 @@ class Header extends Component {
               </div>
             </div>
             {/* Button show menu */}
-            <div className="btn-show-menu-mobile hamburger hamburger--squeeze">
+            <div onClick={this.menuHandle.bind(this,'mobilemenu')} className={this.state.show.includes("menu")?("is-active btn-show-menu-mobile hamburger hamburger--squeeze"):("btn-show-menu-mobile hamburger hamburger--squeeze")}>
               <span className="hamburger-box">
                 <span className="hamburger-inner" />
               </span>
             </div>
           </div>
           {/*Edit Search*/}
-          <div style={{display: 'none'}} id="mobile-search">
+          <div style={this.state.show==='mobilesearch'?{display:'block'}:{display:'none'}}>
             <form className="wrap-search-header flex-w">
               <button className="flex-c-m trans-04">
                 <span className="lnr lnr-magnifier" />
@@ -346,36 +369,36 @@ class Header extends Component {
           </div>
           {/*Edit Search*/}
           {/* Menu Mobile */}
-          <div className="menu-mobile">
-            <ul className="main-menu-m">
+          <div ref="mobilemenu" className="menu-mobile">
+            <ul  className="main-menu-m">
               <li>
                 <a href="shop-sidebar-grid.html">SẢN PHẨM</a>
-                <ul className="sub-menu-m">
+                <ul ref="mobilemainmenu" className="sub-menu-m">
                   <li>
                     <a href="shop-sidebar-grid.html">
                       RAU CỦ
                     </a>
-                    <ul className="sub-sub-menu-m">
+                    <ul ref="mobilesubmenu1" className="sub-sub-menu-m">
                       <li><a href="shop-sidebar-grid.html">RAU</a></li>
                       <li><a href="shop-sidebar-grid.html">CỦ</a></li>  
                     </ul>
-                    <span className="arrow-sub-menu-m">
+                    <span onClick={this.menuHandle.bind(this,'mobilesubmenu1')} className="turn-arrow-main-menu-m arrow-sub-menu-m">
                       <i className="fa fa-angle-right" aria-hidden="true" />
                     </span>
                   </li>
                   <li>
                     <a href="shop-sidebar-grid.html">TRÁI CÂY</a>
-                    <ul className="sub-sub-menu-m">
+                    <ul ref="mobilesubmenu2" className="sub-sub-menu-m">
                       <li><a href="shop-sidebar-grid.html">ĐẶC SẢN VIỆT NAM</a></li>
                       <li><a href="shop-sidebar-grid.html">TRÁI CÂY NHẬP KHẨU</a></li>                      
                     </ul>
-                    <span className="arrow-sub-menu-m">
+                    <span onClick={this.menuHandle.bind(this,'mobilesubmenu2')} className="turn-arrow-main-menu-m arrow-sub-menu-m">
                       <i className="fa fa-angle-right" aria-hidden="true" />
                     </span>
                   </li>
                   <li><a href="shop-sidebar-grid.html">ĐỒ KHÔ</a></li>
                 </ul>
-                <span className="arrow-main-menu-m">
+                <span onClick={this.menuHandle.bind(this,'mobilemainmenu')} className="turn-arrow-main-menu-m arrow-main-menu-m">
                   <i className="fa fa-angle-right" aria-hidden="true" />
                 </span>
               </li>
@@ -394,14 +417,14 @@ class Header extends Component {
       </button>
       
       <!--Edit Search*/}
-          <div style={{display: 'none'}} className="container-search-header" id="container-search-header">
-            <form className="wrap-search-header flex-w">
-              <button className="flex-c-m trans-04">
-                <span className="lnr lnr-magnifier" />
-              </button>
-              <input className="plh1" type="text" name="search" placeholder="Search tất cả" />
-            </form>
-          </div>
+          {/*<div className="container-search-header" id="container-search-header">*/}
+            {/*<form className="wrap-search-header flex-w">*/}
+              {/*<button className="flex-c-m trans-04">*/}
+                {/*<span className="lnr lnr-magnifier" />*/}
+              {/*</button>*/}
+              {/*<input className="plh1" type="text" name="search" placeholder="Search tất cả" />*/}
+            {/*</form>*/}
+          {/*</div>*/}
           {/*Edit Search*/}
           {/* </div> */}
         </header>
@@ -413,12 +436,20 @@ const mapStateToProps = (state) => {
   return {
     cart : state.cart.cart,
     sum : state.cart.sum,
+    account: state.login.account,
+    pending:state.login.pending,
   }
 }
 const mapDispatchToProps = (dispatch, props) => {
   return{
     delCart : (product) => {
       dispatch(delCart(product));
+    },
+    login : (email,password) => {
+      dispatch(login(email,password));
+    },
+    logout : () => {
+      dispatch(logout());
     },
   }
 }

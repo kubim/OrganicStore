@@ -3086,8 +3086,8 @@ input.num-product::-webkit-inner-spin-button {
 
 .txt-m-102 {
   font-family: Merriweather;
-  font-size: 20px;
-  line-height: 1.2;
+  font-size: 15px;
+  line-height: 1;
 }
 
 .txt-m-103 {
@@ -3300,7 +3300,7 @@ input.num-product::-webkit-inner-spin-button {
 
 .txt-l-102 {
   font-family: Lora;
-  font-size: 35px;
+  font-size: 30px;
   line-height: 1.2;
   text-transform: uppercase;
 }
@@ -4638,6 +4638,7 @@ input.num-product::-webkit-inner-spin-button {
 
 /*---------------------------------------------*/
 .hov-btn2:hover {
+  cursor:pointer;
   background-color: #333;
   border-color: #333;
   color: #fff;

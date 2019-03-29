@@ -19,6 +19,8 @@ import ReactDOM from 'react-dom';
 // import SingleProduct from "../SingleProduct";
 // import Shop from "../Shop";
 
+import registerServiceWorker from '../../registerServiceWorker';
+
 import Axios from 'axios';
 import {listCIDPCRequest} from "../../actions";
 // import Link from "react-router-dom/es/Link";
@@ -29,11 +31,12 @@ class ProductH extends Component {
         // this.props.listCALL();
         // this.props.listCIDPCCALL(2);
         // var {products1}= this.props.products;
-        // addjs();
-        // // console.log(this.props.lispPA());
-        // var { idp } = this.props;
-        // alert(idp);
-        //this.props.listPIDCACALL(idp);
+        addjs();
+        // console.log(this.props.lispPA());
+        var { idp, pro } = this.props;
+        alert("denPrH roi"+idp+" - "+pro);
+        alert(idp);
+        this.props.listPIDCACALL(idp,pro);
     }
 
 
@@ -138,20 +141,20 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
     return{
-        listPALL : () => {
-            dispatch(listPARequest());
-        },
-        listCALL : () => {
-            dispatch(listCARequest());
-        },
-        listCIDPCALL : (id) => {
-            dispatch(listCIDPRequest(id));
-        },
-        listCIDPCCALL : (id) => {
-            dispatch(listCIDPCRequest(id));
-        },
-        listPIDCACALL : (id) => {
-        dispatch(listPIDCARequest(id));
+        // listPALL : () => {
+        //     dispatch(listPARequest());
+        // },
+        // listCALL : () => {
+        //     dispatch(listCARequest());
+        // },
+        // listCIDPCALL : (id) => {
+        //     dispatch(listCIDPRequest(id));
+        // },
+        // listCIDPCCALL : (id) => {
+        //     dispatch(listCIDPCRequest(id));
+        // },
+        listPIDCACALL : (id,data) => {
+        dispatch(listPIDCARequest(id,data));
     },
 }
 }
